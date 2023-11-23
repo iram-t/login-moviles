@@ -7,10 +7,7 @@ import 'package:login/screens/forgot.dart';
 class LoginWidget extends StatefulWidget {
   final VoidCallback onClickedSignUp;
 
-  const LoginWidget({
-    Key? key,
-    required this.onClickedSignUp,
-  }) : super(key: key);
+  const LoginWidget({super.key, required this.onClickedSignUp});
 
   @override
   State<LoginWidget> createState() => _LoginWidgetState();
@@ -49,7 +46,7 @@ class _LoginWidgetState extends State<LoginWidget> {
             TextField(
               controller: passwordController,
               textInputAction: TextInputAction.done,
-              decoration: const InputDecoration(labelText: 'Password'),
+              decoration: const InputDecoration(labelText: 'Contraseña'),
               obscureText: true,
             ),
             const SizedBox(height: 20),

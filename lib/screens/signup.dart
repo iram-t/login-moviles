@@ -50,7 +50,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                 controller: emailController,
                 cursorColor: Colors.white,
                 textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(labelText: 'Email'),
+                decoration: const InputDecoration(labelText: 'Correo'),
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: (email) =>
                     email != null && !EmailValidator.validate(email)
@@ -73,7 +73,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                   controller: confirmPasswordController,
                   textInputAction: TextInputAction.next,
                   decoration:
-                      const InputDecoration(labelText: 'Confirm Password'),
+                      const InputDecoration(labelText: 'Confirmar contraseña'),
                   obscureText: true,
                   validator: (val) {
                     if (val == null) return 'Empty';
