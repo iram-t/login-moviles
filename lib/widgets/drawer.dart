@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:login/services/auth.dart';
+import 'package:provider/provider.dart';
 
 class DrawerInicio extends StatefulWidget {
   const DrawerInicio({super.key});
@@ -11,6 +12,7 @@ class DrawerInicio extends StatefulWidget {
 class _DrawerInicio extends State<DrawerInicio> {
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context, listen: false);
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -28,10 +30,12 @@ class _DrawerInicio extends State<DrawerInicio> {
             ),
           ),
           ListTile(
-            leading: const Icon(Icons.exit_to_app),
-            title: const Text('Cerrar Sesion'),
-            onTap: () => FirebaseAuth.instance.signOut(),
-          ),
+              leading: const Icon(Icons.exit_to_app),
+              title: const Text('Cerrar Sesion'),
+              onTap: () {
+                authService.logout();
+                Navigator.pushReplacementNamed(context, 'login');
+              }),
         ],
       ),
     );

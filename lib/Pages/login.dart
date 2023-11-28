@@ -1,0 +1,110 @@
+import 'package:flutter/material.dart';
+import 'package:login/providers/login_provider.dart';
+import 'package:login/services/auth.dart';
+import 'package:login/services/notification_services.dart';
+import 'package:provider/provider.dart';
+
+class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              ChangeNotifierProvider(
+                  create: (_) => LoginFormProvider(), child: _LoginForm())
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LoginForm extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final loginFrom = Provider.of<LoginFormProvider>(context);
+    return SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          key: loginFrom.formKey,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(height: 200),
+            const Text(
+              'Bienvenido',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 40),
+            TextFormField(
+              autocorrect: false,
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+              decoration:
+                  const InputDecoration(labelText: 'Correo Electronico'),
+              onChanged: (value) => loginFrom.email = value,
+              // se esta usando una expresion regular para comparar la cadena con el patron
+              validator: (value) {
+                String pattern =
+                    r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                RegExp regExp = RegExp(pattern);
+
+                return regExp.hasMatch(value ?? '')
+                    ? null
+                    : 'El valor ingresado no luce como un correo';
+              },
+            ),
+            const SizedBox(height: 4),
+            TextFormField(
+              autocorrect: false,
+              obscureText: true,
+              textInputAction: TextInputAction.done,
+              decoration: const InputDecoration(labelText: 'Contraseña'),
+              onChanged: (value) => loginFrom.password = value,
+              validator: (value) {
+                return (value != null && value.length >= 6)
+                    ? null
+                    : "La contraseña debe de tener mas de 6 caracteres";
+              },
+            ),
+            const SizedBox(height: 20),
+            FilledButton(
+              onPressed: loginFrom.isLoading
+                  ? null
+                  : () async {
+                      FocusScope.of(context).unfocus();
+                      final authService =
+                          Provider.of<AuthService>(context, listen: false);
+                      // Sirve para verificar si el formulario no es valido
+                      if (!loginFrom.isValidForm()) return;
+                      loginFrom.isLoading = true;
+
+                      //Validar si el login es correcto
+                      final String? errorMessage = await authService.login(
+                          loginFrom.email, loginFrom.password);
+
+                      if (errorMessage == null) {
+                        Navigator.pushReplacementNamed(context, 'home');
+                      } else {
+                        // Mostrar el error en pantalla
+                        NotificationServices.showSnackBar(errorMessage);
+                        loginFrom.isLoading = false;
+                      }
+                    },
+              child: const Text('Iniciar Sesion'),
+            ),
+            const SizedBox(height: 20),
+            TextButton(
+              onPressed: () =>
+                  Navigator.pushReplacementNamed(context, 'register'),
+              child: const Text('Registrarse'),
+            ),
+          ],
+        ));
+  }
+}

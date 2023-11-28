@@ -1,47 +1,43 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:login/screens/auth.dart';
-import 'package:login/screens/verify.dart';
-import 'firebase_options.dart';
+import 'package:login/Pages/check_auth.dart';
+import 'package:login/Pages/login.dart';
+import 'package:login/Pages/home_page.dart';
+import 'package:login/Pages/signup.dart';
+import 'package:login/services/auth.dart';
+import 'package:login/services/notification_services.dart';
+import 'package:provider/provider.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
-  runApp(const MyApp());
+void main() {
+  runApp(const AppState());
 }
 
-final navigatorKey = GlobalKey<NavigatorState>();
+class AppState extends StatelessWidget {
+  const AppState({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthService()),
+      ],
+      child: MyApp(),
+    );
+  }
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-        navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
-        home: const MainPage(),
-      );
-}
-
-class MainPage extends StatelessWidget {
-  const MainPage({super.key});
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-        body: StreamBuilder<User?>(
-          stream: FirebaseAuth.instance.authStateChanges(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return const VerifyEmailPage();
-            } else {
-              return const AuthPage();
-            }
-          },
-        ),
+        initialRoute: 'checking',
+        routes: {
+          'login': (_) => LoginScreen(),
+          'register': (_) => SignUpScreen(),
+          'home': (_) => HomePage(),
+          'checking': (_) => CheckAuthScreen(),
+        },
+        scaffoldMessengerKey: NotificationServices.messengerKey,
       );
 }
