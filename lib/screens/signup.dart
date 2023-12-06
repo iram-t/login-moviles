@@ -18,7 +18,6 @@ class SignUpWidget extends StatefulWidget {
 
 class _SignUpWidgetState extends State<SignUpWidget> {
   final formKey = GlobalKey<FormState>();
-  final usernameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
@@ -27,7 +26,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
-    usernameController.dispose();
+    confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -48,7 +47,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
               const SizedBox(height: 20),
               TextFormField(
                 controller: emailController,
-                cursorColor: Colors.white,
+                keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
                 decoration: const InputDecoration(labelText: 'Correo'),
                 autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -94,7 +93,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                     TextSpan(
                       recognizer: TapGestureRecognizer()
                         ..onTap = widget.onClickedSignIn,
-                      text: 'Iniciar sesion',
+                      text: 'Registrase',
                       style: const TextStyle(
                         decoration: TextDecoration.underline,
                         color: Colors.black,

@@ -39,6 +39,7 @@ class _LoginWidgetState extends State<LoginWidget> {
             const SizedBox(height: 40),
             TextField(
               controller: emailController,
+              keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.next,
               decoration: const InputDecoration(labelText: 'Email'),
             ),
